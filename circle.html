@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Draw Circles</title>
+    <title>Draw and Calculate Pi - Mobile Friendly</title>
     <style>
         canvas {
             border: 1px solid #000;
@@ -11,102 +11,102 @@
 </head>
 <body>
 
-<canvas id="drawingCanvas" width="1000" height="1000"></canvas>
-<div id="info"></div>
+<canvas id="drawingCanvas" width="600" height="400"></canvas>
+<div id="info">Estimated Pi: N/A, Rank: N/A</div>
 
 <script>
-  const canvas = document.getElementById('drawingCanvas');
-  const ctx = canvas.getContext('2d');
-  let isDrawing = false;
-  let points = [];
+    const canvas = document.getElementById('drawingCanvas');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let points = [];
 
-  function startDrawing(x, y) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      document.getElementById('info').textContent = 'Estimated Pi: N/A, Rank: N/A';
-      isDrawing = true;
-      points = [{ x: x, y: y }];
-  }
-
-  function draw(x, y) {
-      if (!isDrawing) return;
-      points.push({ x: x, y: y });
-      drawLine(points[points.length - 2], points[points.length - 1]);
-  }
-
-  function stopDrawing() {
-      if (!isDrawing) return;
-      isDrawing = false;
-      points.push(points[0]);
-      drawLine(points[points.length - 2], points[points.length - 1]);
-
-      const area = calculateArea(points);
-      const perimeter = calculatePerimeter(points);
-      const estimatedPi = perimeter * perimeter / (4 * area);
-      const rank = calculateRank(estimatedPi);
-
-      document.getElementById('info').textContent = `Estimated Pi: ${estimatedPi.toFixed(5)}, Rank: ${rank}`;
-  }
-
-  // Mouse events
-  canvas.addEventListener('mousedown', e => startDrawing(e.offsetX, e.offsetY));
-  canvas.addEventListener('mousemove', e => draw(e.offsetX, e.offsetY));
-  canvas.addEventListener('mouseup', stopDrawing);
-
-  // Touch events
-  canvas.addEventListener('touchstart', e => {
-      e.preventDefault(); // Prevent scrolling when touching the canvas
-      const touch = e.touches[0];
-      const touchX = touch.clientX - canvas.offsetLeft;
-      const touchY = touch.clientY - canvas.offsetTop;
-      startDrawing(touchX, touchY);
-  });
-
-  canvas.addEventListener('touchmove', e => {
-      e.preventDefault(); // Prevent scrolling when touching the canvas
-      const touch = e.touches[0];
-      const touchX = touch.clientX - canvas.offsetLeft;
-      const touchY = touch.clientY - canvas.offsetTop;
-      draw(touchX, touchY);
-  });
-
-  canvas.addEventListener('touchend', stopDrawing);
-
-  function drawLine(from, to) {
-    ctx.beginPath();
-    ctx.moveTo(from.x, from.y);
-    ctx.lineTo(to.x, to.y);
-    ctx.stroke();
-  }
-
-  function calculateArea(points) {
-    // Simple polygon area calculation using the shoelace formula
-    let area = 0;
-    for (let i = 0; i < points.length - 1; i++) {
-      area += points[i].x * points[i + 1].y - points[i + 1].x * points[i].y;
+    function startDrawing(x, y) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        document.getElementById('info').textContent = 'Estimated Pi: N/A, Rank: N/A';
+        isDrawing = true;
+        points = [{ x: x, y: y }];
     }
-    return Math.abs(area / 2);
-  }
 
-  function calculatePerimeter(points) {
-    let perimeter = 0;
-    for (let i = 0; i < points.length - 1; i++) {
-      const dx = points[i + 1].x - points[i].x;
-      const dy = points[i + 1].y - points[i].y;
-      perimeter += Math.sqrt(dx * dx + dy * dy);
+    function draw(x, y) {
+        if (!isDrawing) return;
+        points.push({ x: x, y: y });
+        drawLine(points[points.length - 2], points[points.length - 1]);
     }
-    return perimeter;
-  }
 
-  function calculateRank(estimatedPi) {
-    const accuracy = Math.abs(Math.PI - estimatedPi);
-    if (accuracy < 0.1) return 'S+';
-    if (accuracy < 0.3) return 'S';
-    if (accuracy < 0.5) return 'A';
-    if (accuracy < 0.8) return 'B';
-    if (accuracy < 1.0) return 'C';
-    return 'D';
-  }
+    function stopDrawing() {
+        if (!isDrawing) return;
+        isDrawing = false;
+        points.push(points[0]);
+        drawLine(points[points.length - 2], points[points.length - 1]);
+
+        const area = calculateArea(points);
+        const perimeter = calculatePerimeter(points);
+        const estimatedPi = perimeter * perimeter / (4 * area);
+        const rank = calculateRank(estimatedPi);
+
+        document.getElementById('info').textContent = `Estimated Pi: ${estimatedPi.toFixed(5)}, Rank: ${rank}`;
+    }
+
+    // Mouse events
+    canvas.addEventListener('mousedown', e => startDrawing(e.offsetX, e.offsetY));
+    canvas.addEventListener('mousemove', e => draw(e.offsetX, e.offsetY));
+    canvas.addEventListener('mouseup', stopDrawing);
+
+    // Touch events
+    canvas.addEventListener('touchstart', e => {
+        e.preventDefault(); // Prevent scrolling when touching the canvas
+        const touch = e.touches[0];
+        const touchX = touch.clientX - canvas.offsetLeft;
+        const touchY = touch.clientY - canvas.offsetTop;
+        startDrawing(touchX, touchY);
+    });
+
+    canvas.addEventListener('touchmove', e => {
+        e.preventDefault(); // Prevent scrolling when touching the canvas
+        const touch = e.touches[0];
+        const touchX = touch.clientX - canvas.offsetLeft;
+        const touchY = touch.clientY - canvas.offsetTop;
+        draw(touchX, touchY);
+    });
+
+    canvas.addEventListener('touchend', stopDrawing);
+
+    function drawLine(from, to) {
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(to.x, to.y);
+        ctx.stroke();
+    }
+
+    function calculateArea(points) {
+        let area = 0;
+        for (let i = 0; i < points.length - 1; i++) {
+            area += points[i].x * points[i + 1].y - points[i + 1].x * points[i].y;
+        }
+        return Math.abs(area / 2);
+    }
+
+    function calculatePerimeter(points) {
+        let perimeter = 0;
+        for (let i = 0; i < points.length - 1; i++) {
+            const dx = points[i + 1].x - points[i].x;
+            const dy = points[i + 1].y - points[i].y;
+            perimeter += Math.sqrt(dx * dx + dy * dy);
+        }
+        return perimeter;
+    }
+
+    function calculateRank(estimatedPi) {
+        const accuracy = Math.abs(Math.PI - estimatedPi);
+        if (accuracy < 0.01) return 'S+';
+        if (accuracy < 0.05) return 'S';
+        if (accuracy < 0.1) return 'A';
+        if (accuracy < 0.2) return 'B';
+        if (accuracy < 0.5) return 'C';
+        return 'D';
+    }
 </script>
 
 </body>
 </html>
+
